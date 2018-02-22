@@ -1,0 +1,78 @@
+%SET{ "REPORTER_URL" value="%ATTACHURL%/{{ menu.name }}.html" }%
+
+---+!! !{{ menu.name }}
+
+%TOC%
+
+---++ Introduction
+
+| *Trigger Menu Name* | *Grammar Version* | *Compatible releases* | *First run with collision key* |
+| !{{ menu.name }} | {{ menu.grammar_version }} | >= 9_2_2 |  |
+
+---++ Changes with respect to !L1Menu_xxxx
+   * Added the following algorithms
+      * bxxx L1_xxxx
+   * Changed the following algorithms
+      * bxxx L1_xxxx
+   * Removed the following algorithms
+      * bxxx L1_xxxx
+   * references:
+      * https://its.cern.ch/jira/browse/CMSHLT-xxxx
+
+---+++ Menu availability in a CMSSW job
+
+---++ List and description of algorithm and technical triggers
+
+
+A complete description of the algorithm and technical trigger implementation is available in the attached
+[[%GET{"REPORTER_URL"}%][HTML Description of L1 Menu]]. %ICON{updated}%
+
+---+++ L1 menu identification
+
+|Menu Name: | !{{ menu.name }} |
+|Menu UUID: | {{ menu.uuid_menu }} |
+|Firmware UUID: | {{ menu.uuid_firmware }}  |
+|Associated L1 scale DB key: | {{ menu.scale_set }} |
+
+
+---+++ Summary
+
+   * Number of algorithm triggers: {{ menu.algorithms|count }} defined.
+
+Number of algorithm triggers per trigger group:
+
+    | *Trigger group* | *Number of bits used* |
+    {%- for name, algorithms in menu.triggerGroups %}
+      | !{{ name }} algorithm triggers: | {{ algorithms|count }} |
+    {%-endfor%}
+
+<p style="page-break-before: always">&nbsp;</p>
+
+---+++ List of algorithm triggers sorted by trigger groups
+
+<p style="page-break-before: always">&nbsp;</p>
+
+
+        {%- for name, algorithms in menu.triggerGroups %}
+---++++ !{{ name }} algorithm triggers
+|  *Trigger Name*  |  *Trigger Alias*  |  *Bit*  |  *Comments*  |
+          {%- for algorithm in algorithms %}
+|[[%GET{"REPORTER_URL"}%#{{ algorithm.name }} ][{{ algorithm.name }}]]   | {{ algorithm.name }}  | {{ algorithm.index }} |  |
+          {%-endfor %}
+!{{ name }} algorithm triggers: {{ algorithms|count }} bits defined
+
+        {%-endfor %}
+
+
+
+<p style="page-break-before: always">&nbsp;</p>
+
+---+++ List of algorithm triggers sorted by bits
+
+| *Algorithm* | *Alias* | *Bit number* | *Module Id* |
+{%- for algorithm in menu.algorithms %}
+|[[%GET{"REPORTER_URL"}%#{{ algorithm.name }} ][{{ algorithm.name }}]]   |{{ algorithm.name }} |{{ algorithm.index }} |{{ algorithm.moduleId  }} |
+{%- endfor%}
+
+
+<p style="page-break-before: always">&nbsp;</p>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta content="text/html"  charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ menu.name }}</title>
+  <meta name="description" content="{{ menu.comment }}">
+  <meta name="author" content="">
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <!-- customizations -->
+  <style>
+    ul.toc {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    .panel-heading h3 {
+        margin-top: .1em;
+        margin-bottom: .1em;
+    }
+    .panel-heading a.top {
+        float: right;
+    }
+    pre .curl {
+        font-weight: bold;
+    }
+    pre .cut {
+        color: darkmagenta;
+    }
+    pre .function {
+        font-weight: bold;
+        color: darkblue;
+    }
+    pre .keyword {
+        font-weight: bold;
+        color: blue;
+    }
+    pre .vhdlop {
+        font-weight: bold;
+        color: darkmagenta;
+    }
+    pre .vhdlsig {
+        color: brown;
+    }
+    .vhdl,
+    .expression {
+        white-space: normal;
+        word-wrap: normal;
+        word-break: keep-all;
+    }
+    .informative {
+        font-size: .9em;
+        color: darkgray;
+    }
+    h3 .informative {
+        font-size: .6em;
+    }
+    .footer {
+        float: right;
+        font-size: .9em;
+        color: darkgray;
+    }
+  </style>
+</head>
+<body role="document">
+
+  <div class="container" role="main">
+    <a name="top"></a>
+    <h1>{{ menu.name }}</h1>
+
+    <hr />
+    <ul>
+    <li><strong>Comment:</strong> {{ menu.comment }}</li>
+    <li><strong>Firmware UUID:</strong> {{ menu.uuid_firmware }}</li>
+    <li><strong>Menu UUID:</strong> {{ menu.uuid_menu }}</li>
+    <li><strong>Grammar Version:</strong> {{ menu.grammar_version }}</li>
+    <li><strong>Scale Set:</strong> {{ menu.scale_set }}</li>
+    </ul>
+    <hr />
+
+    <ul class="toc">
+{%- for algorithm in menu.algorithms %}
+      <li><a href=#{{ algorithm.name }}>{{ algorithm.index }}::{{ algorithm.name }}</a></li>
+{%- endfor %}
+    </ul>
+
+{%- for algorithm in menu.algorithms %}
+    <hr />
+    <a name="{{ algorithm.name }}"></a>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <a class="top btn btn-sm btn-default" href="#top"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> TOP</a>
+        <h3>{{ algorithm.index }}::{{ algorithm.name }} <span class="informative">(Module {{ algorithm.moduleId }})</span></h3>
+      </div>
+      <div class="panel-body">
+        <p><strong>Logical Expression</strong></p>
+        <p><pre class="expression">{{ algorithm.expression|exprColorize }}</pre></p>
+
+        <p><strong>VHDL Expression</strong></p>
+        <p><pre class="vhdl"><span class="vhdlsig">{{ algorithm.name|vhdlLabel }}</span> <span class="vhdlop"><=</span> {{ algorithm.vhdlExpression|vhdlExpression|vhdlColorize }}</pre></p>
+
+  {%- if algorithm.comment %}
+        <p><strong>Comment</strong></p>
+        <p><pre>{{ algorithm.comment }}</pre></p>
+  {% endif %}
+
+        <p><strong>Conditions</strong></p>
+        <ul>
+  {%- for condition in algorithm.conditions %}
+        <li><strong>{{ condition.token }}</strong> : <code>{{ condition.name|vhdlLabel }}</code>
+          <ul>
+    {#- TODO: getting bit messy, divide loop in suitable blocks? -#}
+    {%- for object in condition.objects %}
+            <li>Object: {{ object.name }}
+              <ul>
+      {%- for cut in object.cuts %}
+                <li>
+                  {% if cut.cutType == es.Threshold %}
+                    Threshold: {{ cut.minimumValue|round(1) }} GeV
+                    : <code>0x{{ cut.minimumIndex|hex }}</code>
+                  {% elif cut.cutType == es.Eta %}
+                    Eta: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                    : <code>[0x{{ cut.minimumIndex|hex }}, 0x{{ cut.maximumIndex|hex }}]</code>
+                  {% elif cut.cutType == es.Phi %}
+                    Phi: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}] rad
+                    : <code>[0x{{ cut.minimumIndex|hex }}, 0x{{ cut.maximumIndex|hex }}]</code>
+                  {% elif cut.cutType == es.Charge %}
+                    Charge: {{ cut.data }}
+                    : <code>{{ cut.name }}</code>
+                  {% elif cut.cutType == es.Quality %}
+                    Quality: 0x{{ cut.data|int|hex(4) }}
+                    : <code>{{ cut.name }}</code>
+                  {% elif cut.cutType == es.Isolation %}
+                    Isolation: 0x{{ cut.data|int|hex(4) }}
+                    : <code>{{ cut.name }}</code>
+                  {% elif cut.cutType == es.Slice %}
+                    {% if cut.minimumValue == cut.maximumValue %}
+                    Slice: [{{ cut.minimumValue|int }}]
+                    {% else %}
+                    Slice: [{{ cut.minimumValue|int }} - {{ cut.maximumValue|int }}]
+                    {% endif %}
+                    : <code>{{ cut.name }}</code>
+                  {% elif cut.cutType == es.Count %}
+                    Count: {{ cut.minimumValue|round|int }}
+                    : <code>0x{{ cut.minimumIndex|hex }}</code>
+                  {% else %}
+                    esType[{{ cut.cutType }}]: [{{ cut.minimumValue }}, {{ cut.maximumValue }}],{{ cut.data }}
+                  {% endif %}
+                </li>
+      {% endfor %}
+              </ul>
+            </li>
+    {%- endfor %}
+          </ul>
+          <ul>
+    {%- for cut in condition.cuts %}
+            <li>Cut: {{ cut.name }}</li>
+            <ul><li>
+              {% if cut.cutType == es.DeltaEta %}
+                Delta-Eta: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.DeltaPhi %}
+                Delta-Phi: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.DeltaR %}
+                Delta-R: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.OvRmDeltaEta %}
+                ORM-Delta-Eta: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.OvRmDeltaPhi %}
+                ORM-Delta-Phi: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.OvRmDeltaR %}
+                ORM-Delta-R: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.Mass %}
+                Mass: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.TwoBodyPt %}
+                TwoBodyPt: {{ cut.minimumValue|round(3) }}
+                : <code>precision: {{ cut.precision|int }}</code>
+              {% elif cut.cutType == es.ChargeCorrelation %}
+                Charge Correaltion: <code>{{ cut.data }}</code>
+              {% else %}
+                esType[{{ cut.cutType }}]: [{{ cut.minimumValue }}, {{ cut.maximumValue }}],{{ cut.data }}
+              {% endif %}
+          </li></ul>
+    {%- endfor %}
+          </ul>
+        </li>
+  {%- endfor %}
+        </ul>
+      </div>
+    </div>
+{%- endfor %}
+
+    <div class="footer" role="footer">
+      <p>Generated by tm-reporter v{{ reporter.version }} on {{ reporter.timestamp }}.</p>
+    </div>
+
+  </div><!-- /container -->
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+</body>
+</html>
