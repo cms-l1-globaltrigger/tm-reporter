@@ -40,7 +40,7 @@ def parse():
     )
     parser.add_argument('--version',
         action='version',
-        version="L1 Trigger Menu XML compiler version {0}".format(__version__),
+        version="Reporter for Level-1 Trigger Menus version {0}".format(__version__),
     )
     return parser.parse_args()
 
