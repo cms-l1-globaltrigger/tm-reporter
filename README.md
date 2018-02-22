@@ -1,5 +1,5 @@
-VHDL Reporter
-=============
+XML Menu Reporter
+=================
 
 
 ## Basic usage
