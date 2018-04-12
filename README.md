@@ -18,6 +18,7 @@ other using the `-o` flag.
 
  * `jinja2`
  * `tmEventSetup`
+ * `tmTable`
 
 **Note:** make sure to set `UTM_ROOT` before executing.
 
@@ -29,4 +30,4 @@ other using the `-o` flag.
     $ git clone https://gitlab.cern.ch/.../tm-reporter.git
     $ cd tm-reporter
     $ . setup.sh
-    $ 
+    $

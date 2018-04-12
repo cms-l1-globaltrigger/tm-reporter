@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import tmEventSetup
+import tmTable
 
 from tmReporter.reporter import Reporter
 from tmReporter import __version__
@@ -16,6 +17,32 @@ EXIT_FAILURE = 1
 # Available output modes
 ModeHtml = 'html'
 ModeTWiki = 'twiki'
+
+def load_eventsetup(filename):
+    """Load event setup and extend by original raw cuts from XML menu.
+    How to use extension:
+    >>> cut = eventSetup._cuts['MU-QLTY_HQ']
+    >>> print cut['minimum'], cut['maximum']
+    """
+    # Load raw XML menu
+    menu = tmTable.Menu()
+    scale = tmTable.Scale()
+    extSignal = tmTable.ExtSignal()
+    warnings = tmTable.xml2menu(filename, menu, scale, extSignal)
+    if warnings:
+        raise RuntimeError(warnings)
+    # Load event setup
+    eventSetup = tmEventSetup.getTriggerMenu(filename)
+    # HACK Extend event setup with original raw cuts.
+    eventSetup._cuts = {}
+    for cuts in menu.cuts.values():
+        for cut in cuts:
+            name = cut['name']
+            if name in eventSetup._cuts:
+                if eventSetup._cuts[name].items() != cut.items():
+                    raise RuntimeError("cuts of same name must contain same attributes")
+            eventSetup._cuts[name] = cut
+    return eventSetup
 
 def parse():
     """Parse command line options."""
@@ -51,6 +78,7 @@ def main():
     # Setup console logging
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
 
+    # Make sure utm library is available
     utm_root = os.environ.get("UTM_ROOT")
     logging.info("UTM_ROOT: %s", utm_root)
     if not utm_root:
@@ -62,7 +90,7 @@ def main():
     try:
         # Load XML menu and write report.
         logging.info("loading XML menu %s", args.filename)
-        eventSetup = tmEventSetup.getTriggerMenu(args.filename)
+        eventSetup = load_eventsetup(args.filename)
 
         template_dir = os.path.join(reporter_root, 'templates')
 

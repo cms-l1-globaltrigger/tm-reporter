@@ -72,12 +72,17 @@
     <h1>{{ menu.name }}</h1>
 
     <hr />
-    <ul>
-    <li><strong>Comment:</strong> {{ menu.comment }}</li>
-    <li><strong>Firmware UUID:</strong> {{ menu.uuid_firmware }}</li>
-    <li><strong>Menu UUID:</strong> {{ menu.uuid_menu }}</li>
-    <li><strong>Grammar Version:</strong> {{ menu.grammar_version }}</li>
-    <li><strong>Scale Set:</strong> {{ menu.scale_set }}</li>
+
+{% if not menu.n_modules %}
+    <div class="alert alert-info" role="alert"><strong><span class="glyphicon glyphicon-exclamation-sign"></span></strong> This document was generated from an intermediate development snapshot.</div>
+{% endif %}
+
+    <ul class="list-group">
+      <li class="list-group-item"><strong>Comment:</strong> {{ menu.comment|htmlNewlines }}</li>
+      <li class="list-group-item"><strong>Firmware UUID:</strong> {{ menu.uuid_firmware }}</li>
+      <li class="list-group-item"><strong>Menu UUID:</strong> {{ menu.uuid_menu }}</li>
+      <li class="list-group-item"><strong>Grammar Version:</strong> {{ menu.grammar_version }}</li>
+      <li class="list-group-item"><strong>Scale Set:</strong> {{ menu.scale_set }}</li>
     </ul>
     <hr />
 
@@ -160,29 +165,37 @@
             <li>Cut: {{ cut.name }}</li>
             <ul><li>
               {% if cut.cutType == es.DeltaEta %}
-                Delta-Eta: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>precision: {{ cut.precision|int }}</code>
+                Delta-Eta: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
+                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.DeltaPhi %}
-                Delta-Phi: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>precision: {{ cut.precision|int }}</code>
+                Delta-Phi: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValue|round(3) }}]
+                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.DeltaR %}
-                Delta-R: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>precision: {{ cut.precision|int }}</code>
+                Delta-R: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
+                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.OvRmDeltaEta %}
-                ORM-Delta-Eta: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>precision: {{ cut.precision|int }}</code>
+                ORM-Delta-Eta: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
+                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.OvRmDeltaPhi %}
-                ORM-Delta-Phi: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>precision: {{ cut.precision|int }}</code>
+                ORM-Delta-Phi: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
+                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.OvRmDeltaR %}
-                ORM-Delta-R: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>precision: {{ cut.precision|int }}</code>
+                ORM-Delta-R: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
+                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.Mass %}
-                Mass: [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>precision: {{ cut.precision|int }}</code>
+                Mass: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
+                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.TwoBodyPt %}
-                TwoBodyPt: {{ cut.minimumValue|round(3) }}
-                : <code>precision: {{ cut.precision|int }}</code>
+                TwoBodyPt: {{ cut.minimumValueRaw|round(3) }}
+                : <code>[{{ cut.minimumValue|round(3) }}]</code>
+                  <code>precision: {{ cut.precision|int }}</code>
               {% elif cut.cutType == es.ChargeCorrelation %}
                 Charge Correaltion: <code>{{ cut.data }}</code>
               {% else %}

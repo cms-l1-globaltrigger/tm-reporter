@@ -169,6 +169,7 @@ class MenuStub:
         self.uuid_firmware = es.getFirmwareUuid()
         self.scale_set = es.getScaleSetName()
         self.grammar_version = es.getVersion()
+        self.n_modules = es.getNmodules()
         self.datetime = es.getDatetime()
         self.comment = es.getComment()
         self.algorithms = self._getAlgorithms(es)
@@ -208,7 +209,7 @@ class AlgorithmStub:
         mapping = self._getMapping()
         for token in self.rpnVector:
             if token in conditionMapPtr:
-                conditions[token] = ConditionStub(conditionMapPtr[token], token=mapping[token])
+                conditions[token] = ConditionStub(es, conditionMapPtr[token], token=mapping[token])
         conditions = conditions.values()
         conditions.sort(key=lambda condition: self.rpnVector.index(condition.name))
         return conditions
@@ -231,11 +232,11 @@ class ConditionStub:
     cuts     list of cut template helpers
     token    expression token for display purposes
     """
-    def __init__(self, ptr, token=None):
+    def __init__(self, es, ptr, token=None):
         self.name = ptr.getName()
         self.type = ptr.getType()
-        self.objects = [ObjectStub(obj) for obj in ptr.getObjects()]
-        self.cuts = [CutStub(cut) for cut in ptr.getCuts()]
+        self.objects = [ObjectStub(es, obj) for obj in ptr.getObjects()]
+        self.cuts = [CutStub(es, cut) for cut in ptr.getCuts()]
         self.token = token or "" # store the expression notation for display purposes
 
 class ObjectStub:
@@ -249,7 +250,7 @@ class ObjectStub:
     extChannelId   channel id of external signal (only valid for EXT type objects)
     cuts           list of cut template helpers
     """
-    def __init__(self, ptr):
+    def __init__(self, es, ptr):
         self.name = ptr.getName()
         self.type = ptr.getType()
         self.comparisonOperator = ptr.getComparisonOperator()
@@ -257,27 +258,37 @@ class ObjectStub:
         self.threshold = ptr.getThreshold() # in GeV
         self.extSignalName = ptr.getExternalSignalName()
         self.extChannelId = ptr.getExternalChannelId()
-        self.cuts = [CutStub(cut) for cut in ptr.getCuts()]
+        self.cuts = [CutStub(es, cut) for cut in ptr.getCuts()]
 
 class CutStub:
     """Cut template helper class.
-    name          full cut name
-    objectType    object type, optional (enum)
-    cutType       cut type (enum)
-    minimumValue  minimum range value (float)
-    maximumValue  maximum range value (float)
-    minimumIndex  minimum range index (int)
-    maximumIndex  maximum range index (int)
-    precision     assigned decimal precision for values (int)
-    data          payload data (for non range cuts)
-    key           scale access key
+    name             full cut name
+    objectType       object type, optional (enum)
+    cutType          cut type (enum)
+    minimumValue     minimum range value (float)
+    maximumValue     maximum range value (float)
+    minimumValueRaw  raw minimum range value from menu (float)
+    maximumValueRaw  raw maximum range value from menu (float)
+    minimumIndex     minimum range index (int)
+    maximumIndex     maximum range index (int)
+    precision        assigned decimal precision for values (int)
+    data             payload data (for non range cuts)
+    key              scale access key
     """
-    def __init__(self, ptr):
+    def __init__(self, es, ptr):
         self.name = ptr.getName()
         self.objectType = ptr.getObjectType()
         self.cutType = ptr.getCutType()
         self.minimumValue = ptr.getMinimumValue()
         self.maximumValue = ptr.getMaximumValue()
+        # HACK Extend cut with raw values
+        if self.cutType in [tmEventSetup.Threshold, tmEventSetup.Count]:
+            self.minimumValueRaw = self.minimumValue
+            self.maximumValueRaw = self.maximumValue
+        else:
+            cut = es._cuts[self.name]
+            self.minimumValueRaw = float(cut['minimum'])
+            self.maximumValueRaw = float(cut['maximum'])
         self.minimumIndex = ptr.getMinimumIndex()
         self.maximumIndex = ptr.getMaximumIndex()
         self.precision = ptr.getPrecision()
@@ -300,6 +311,8 @@ class TemplateEngine(object):
         self.environment.filters['vhdlColorize'] = vhdl2html
         self.environment.filters['vhdlLabel'] = vhdl_label
         self.environment.filters['vhdlExpression'] = vhdl_expression
+        def html_newlines(value): return value.replace('\n', '<br/>\n')
+        self.environment.filters['htmlNewlines'] = html_newlines
         def hex(value, n=1): return format(value, '0{n}x'.format(n=n))
         self.environment.filters['hex'] = hex
 
