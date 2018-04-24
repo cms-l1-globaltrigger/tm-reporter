@@ -200,7 +200,7 @@ class AlgorithmStub:
         self.expression = ptr.getExpression()
         self.vhdlExpression = ptr.getExpressionInCondition()
         self.rpnVector = ptr.getRpnVector()
-        self.comment = "" # not retrievable from esAlgorithm
+        self.comment = self._getComment(self.name, es) # not retrievable from esAlgorithm
         self.conditions = self._getConditions(es)
     def _getConditions(self, es):
         """Returns list of condition stubs assigned to algorithm, sorted by order of appereance."""
@@ -223,6 +223,12 @@ class AlgorithmStub:
         for i in range(len(vhdlTokens)):
             mapping[vhdlTokens[i]] = exprTokens[i]
         return mapping
+    def _getComment(self, name, es):
+        """Pick algorithm comment from raw algorithms."""
+        algorithm = es._algorithms[name]
+        if 'comment' in algorithm:
+            return algorithm['comment']
+        return ""
 
 class ConditionStub:
     """Condition template helper class.

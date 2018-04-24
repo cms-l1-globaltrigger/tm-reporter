@@ -33,6 +33,8 @@ def load_eventsetup(filename):
         raise RuntimeError(warnings)
     # Load event setup
     eventSetup = tmEventSetup.getTriggerMenu(filename)
+    # HACK Extend event setup with original algorithms.
+    eventSetup._algorithms = dict([(algorithm['name'], algorithm) for algorithm in menu.algorithms])
     # HACK Extend event setup with original raw cuts.
     eventSetup._cuts = {}
     for cuts in menu.cuts.values():
