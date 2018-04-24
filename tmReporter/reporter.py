@@ -5,6 +5,7 @@ import tmEventSetup
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from tmReporter.filters import vhdl_label, vhdl_expression, expr2html, vhdl2html
 
+import copy
 import uuid
 import shutil
 import tempfile
@@ -173,12 +174,26 @@ class MenuStub:
         self.datetime = es.getDatetime()
         self.comment = es.getComment()
         self.algorithms = self._getAlgorithms(es)
+        self.cuts = self._getCuts(self.algorithms)
     def _getAlgorithms(self, es):
         """Returns list of algorithm stubs sorted by index."""
         algorithmMapPtr = es.getAlgorithmMapPtr()
         algorithms = [AlgorithmStub(es, algorithm) for algorithm in es.getAlgorithmMapPtr().values()]
         algorithms.sort(key=lambda algorithm: algorithm.index)
         return algorithms
+    def _getCuts(self, algorithms):
+        """Returns list of cut stubs."""
+        cuts = {}
+        for algorithm in algorithms:
+            for condition in algorithm.conditions:
+                for cut in condition.cuts:
+                    if cut.name not in cuts:
+                        cuts[cut.name] = copy.deepcopy(cut)
+                for object in condition.objects:
+                    for cut in object.cuts:
+                        if cut.name not in cuts:
+                            cuts[cut.name] = copy.deepcopy(cut)
+        return cuts.values()
 
 class AlgorithmStub:
     """Algorithm template helper class.
