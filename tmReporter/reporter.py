@@ -169,6 +169,7 @@ class MenuStub:
         self.uuid_menu = es.getMenuUuid()
         self.uuid_firmware = es.getFirmwareUuid()
         self.scale_set = es.getScaleSetName()
+        self.externals_set = es._externals_set # not retrievable from esTriggerMenu
         self.grammar_version = es.getVersion()
         self.n_modules = es.getNmodules()
         self.datetime = es.getDatetime()
@@ -182,7 +183,7 @@ class MenuStub:
         algorithms.sort(key=lambda algorithm: algorithm.index)
         return algorithms
     def _getCuts(self, algorithms):
-        """Returns list of cut stubs."""
+        """Returns sorted list of cut stubs."""
         cuts = {}
         for algorithm in algorithms:
             for condition in algorithm.conditions:
@@ -193,7 +194,7 @@ class MenuStub:
                     for cut in object.cuts:
                         if cut.name not in cuts:
                             cuts[cut.name] = copy.deepcopy(cut)
-        return cuts.values()
+        return sorted(cuts.values(), key=lambda cut: (cut.cutType, cut.objectType))
 
 class AlgorithmStub:
     """Algorithm template helper class.

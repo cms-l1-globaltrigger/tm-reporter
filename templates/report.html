@@ -111,6 +111,7 @@
       <li class="list-group-item"><strong>Menu UUID:</strong> {{ menu.uuid_menu }}</li>
       <li class="list-group-item"><strong>Grammar Version:</strong> {{ menu.grammar_version }}</li>
       <li class="list-group-item"><strong>Scale Set:</strong> {{ menu.scale_set }}</li>
+      <li class="list-group-item"><strong>External Signals Set:</strong> {{ menu.externals_set }}</li>
     </ul>
     <hr />
 
@@ -173,14 +174,14 @@
                     Phi: <a href="#{{ cut.name }}">{{ cut.name }}</a> [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}] rad
                     : <code>[0x{{ cut.minimumIndex|hex }}, 0x{{ cut.maximumIndex|hex }}]</code>
                   {% elif cut.cutType == es.Charge %}
-                    Charge: <a href="#{{ cut.name }}">{{ cut.name }}</a> {{ cut.data }}
-                    : <code>{{ cut.name }}</code>
+                    Charge: <a href="#{{ cut.name }}">{{ cut.name }}</a>
+                    : <code>{{ cut.data }}</code>
                   {% elif cut.cutType == es.Quality %}
-                    Quality: <a href="#{{ cut.name }}">{{ cut.name }}</a> 0x{{ cut.data|int|hex(4) }}
-                    : <code>{{ cut.name }}</code>
+                    Quality: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
+                    <code>0x{{ cut.data|int|hex(4) }}</code>
                   {% elif cut.cutType == es.Isolation %}
-                    Isolation: <a href="#{{ cut.name }}">{{ cut.name }}</a> 0x{{ cut.data|int|hex(4) }}
-                    : <code>{{ cut.name }}</code>
+                    Isolation: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
+                    : <code>0x{{ cut.data|int|hex(4) }}</code>
                   {% elif cut.cutType == es.Slice %}
                     {% if cut.minimumValue == cut.maximumValue %}
                     Slice: <a href="#{{ cut.name }}">{{ cut.name }}</a> [{{ cut.minimumValue|int }}]
@@ -267,8 +268,8 @@
 {%- for cut in menu.cuts if cut.cutType != 0 %}
       <tr>
         <td><a class="anchor" name="{{ cut.name }}"></a> {{ cut.name }}</td>
-        <td>{{ cut.minimumValue|round(3) }} <code>{{ cut.minimumValueRaw|round(3) }}</code></td>
-        <td>{{ cut.maximumValue|round(3) }} <code>{{ cut.maximumValueRaw|round(3) }}</code></td>
+        <td>{% if not cut.data %}{{ cut.minimumValue|round(3) }} <code>{{ cut.minimumValueRaw|round(3) }}</code>{% endif %}</td>
+        <td>{% if not cut.data %}{{ cut.maximumValue|round(3) }} <code>{{ cut.maximumValueRaw|round(3) }}</code>{% endif %}</td>
         <td>{% if cut.data %}<code>0x{{ cut.data|int|hex(4) }}</code>{% endif %}</td>
       </tr>
 {%- endfor %}
