@@ -304,9 +304,12 @@ class CutStub:
         self.minimumValue = ptr.getMinimumValue()
         self.maximumValue = ptr.getMaximumValue()
         # HACK Extend cut with raw values
-        if self.cutType in [tmEventSetup.Threshold, tmEventSetup.Count]:
+        if self.cutType in [tmEventSetup.Threshold]:
             self.minimumValueRaw = self.minimumValue
             self.maximumValueRaw = self.maximumValue
+        elif self.cutType in [tmEventSetup.Count]:
+            self.minimumValueRaw = self.minimumValue
+            self.maximumValueRaw = self.minimumValue
         else:
             cut = es._cuts[self.name]
             self.minimumValueRaw = float(cut['minimum'])
@@ -316,6 +319,7 @@ class CutStub:
         self.precision = ptr.getPrecision()
         self.data = ptr.getData()
         self.key = ptr.getKey()
+
 
 # -----------------------------------------------------------------------------
 #  Template engines with custom resource loader environment.

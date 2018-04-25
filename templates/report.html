@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta content="text/html"  charset="utf-8">
+  <meta content="text/html" charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ menu.name }}</title>
@@ -139,7 +139,7 @@
     <a class="anchor" name="{{ algorithm.name }}"></a>
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3>{{ algorithm.index }}::{{ algorithm.name }} <span class="informative">(Module {{ algorithm.moduleId }})</span></h3>
+        <h3>{{ algorithm.index }} {{ algorithm.name }} <span class="informative">(Module {{ algorithm.moduleId }})</span></h3>
       </div>
       <div class="panel-body">
         <p><strong>Logical Expression</strong></p>
@@ -263,13 +263,17 @@
         <th>Name</th>
         <th>Minimum</th>
         <th>Maximum</th>
-        <th>Data</th>
+        <th>Minimum (hw/emu)</th>
+        <th>Maximum (hw/emu)</th>
+        <th>Data (hw/emu)</th>
       </tr>
 {%- for cut in menu.cuts if cut.cutType != 0 %}
       <tr>
         <td><a class="anchor" name="{{ cut.name }}"></a> {{ cut.name }}</td>
-        <td>{% if not cut.data %}{{ cut.minimumValue|round(3) }} <code>{{ cut.minimumValueRaw|round(3) }}</code>{% endif %}</td>
-        <td>{% if not cut.data %}{{ cut.maximumValue|round(3) }} <code>{{ cut.maximumValueRaw|round(3) }}</code>{% endif %}</td>
+        <td>{% if not cut.data %}{{ cut.minimumValueRaw|round(3) }}{% endif %}</td>
+        <td>{% if not cut.data and cut.cutType != es.Count %}{{ cut.maximumValueRaw|round(3) }}{% endif %}</td>
+        <td>{% if not cut.data %}<code>{{ cut.minimumValue|round(3) }}</code>{% endif %}</td>
+        <td>{% if not cut.data and cut.cutType != es.Count %}<code>{{ cut.maximumValue|round(3) }}</code>{% endif %}</td>
         <td>{% if cut.data %}<code>0x{{ cut.data|int|hex(4) }}</code>{% endif %}</td>
       </tr>
 {%- endfor %}
