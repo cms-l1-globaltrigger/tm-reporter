@@ -64,6 +64,11 @@ esEnergySumsTypes = (
     tmEventSetup.MissingEt,
     tmEventSetup.MissingHt,
     tmEventSetup.MissingEtHF,
+#    tmEventSetup.MissingHtHF,
+    tmEventSetup.AsymmetryEt,
+    tmEventSetup.AsymmetryHt,
+    tmEventSetup.AsymmetryEtHF,
+    tmEventSetup.AsymmetryHtHF,
 )
 
 esMinBiasHfTypes = (
@@ -75,6 +80,17 @@ esMinBiasHfTypes = (
 
 esTowerCountTypes = (
     tmEventSetup.TowerCount,
+)
+
+esSignalTypes = (
+    tmEventSetup.Centrality0,
+    tmEventSetup.Centrality1,
+    tmEventSetup.Centrality2,
+    tmEventSetup.Centrality3,
+    tmEventSetup.Centrality4,
+    tmEventSetup.Centrality5,
+    tmEventSetup.Centrality6,
+    tmEventSetup.Centrality7,
 )
 
 esCorrelationTypes = (
@@ -103,6 +119,7 @@ esCrossGroup = "Cross"
 esCorrelationGroup = "Correlation"
 esMassGroup = "Mass"
 esExternalGroup = "External"
+esSignalGroup = "Signal"
 
 esTriggerGroups = (
     esMuonGroup,
@@ -116,6 +133,7 @@ esTriggerGroups = (
     esCorrelationGroup,
     esMassGroup,
     esExternalGroup,
+    esSignalGroup,
 )
 
 esCutType = {
@@ -393,6 +411,8 @@ class Reporter(object):
                     add_algorithm(esMassGroup, algorithm)
                 elif condition.type == tmEventSetup.Externals:
                     add_algorithm(esExternalGroup, algorithm)
+                elif condition.type in esSignalTypes:
+                    add_algorithm(esSignalGroup, algorithm)
                 else:
                     raise KeyError("unknown condition type")
         # Sort algorithms
