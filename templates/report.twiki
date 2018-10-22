@@ -7,7 +7,7 @@
 ---++ Introduction
 
 | *Trigger Menu Name* | *Grammar Version* | *Compatible releases* | *First run with collision key* |
-| !{{ menu.name }} | {{ menu.grammar_version }} | >= 9_2_2 |  |
+| !{{ menu.name }} | {{ menu.grammar_version }} | >= X_Y_Z |  |
 
 ---++ Changes with respect to !L1Menu_xxxx
    * Added the following algorithms
