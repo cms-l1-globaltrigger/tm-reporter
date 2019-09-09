@@ -22,7 +22,7 @@ def load_eventsetup(filename):
     """Load event setup and extend by original raw cuts from XML menu.
     How to use extension:
     >>> cut = eventSetup._cuts['MU-QLTY_HQ']
-    >>> print cut['minimum'], cut['maximum']
+    >>> print(cut['minimum'], cut['maximum'])
     """
     # Load raw XML menu
     menu = tmTable.Menu()
@@ -116,7 +116,7 @@ def main():
 
         logging.info("done.")
 
-    except RuntimeError, message:
+    except RuntimeError as message:
         logging.error(message)
         return EXIT_FAILURE
 
