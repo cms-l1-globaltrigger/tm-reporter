@@ -20,7 +20,7 @@ setup(
         'Jinja2',
         #'tmTable>=0.7.3',
         #'tmEventSetup>=0.7.3',
-    ]
+    ],
     entry_points={
         'console_scripts': [
             'tm-reporter = tmReporter.main:main',
