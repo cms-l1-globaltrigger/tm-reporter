@@ -26,9 +26,15 @@ Install following l1t-utm wheels or build l1t-utm python bindings.
 
 ## Install
 
+Install using pip
+
 ```bash
-python3 -m venv env
-. env/bin/active
+pip install https://github.com/cms-l1-globaltrigger/tm-reporter/archive/master.zip#egg=tm-reporter-2.7.0
+```
+
+Install from local source
+
+```bash
 git clone https://gitlab.cern.ch/cms-l1-globaltrigger/tm-reporter.git
 cd tm-reporter
 python setup.py test
