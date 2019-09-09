@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import string
 import re
+
+__all__ = ['snakecase', 'vhdl_label', 'vhdl_expression', 'expr2html', 'vhdl2html']
 
 # -----------------------------------------------------------------------------
 #  Precompiled regular expressions

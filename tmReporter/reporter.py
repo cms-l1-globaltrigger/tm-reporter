@@ -1,20 +1,15 @@
-# -*- coding: utf-8 -*-
-
-import tmEventSetup
-
-from jinja2 import Environment, FileSystemLoader, StrictUndefined
-from tmReporter.filters import vhdl_label, vhdl_expression, expr2html, vhdl2html
-
 import copy
-import uuid
-import shutil
-import tempfile
 import datetime
-import logging
 import re
 import sys, os
 
-from tmReporter import __version__
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
+
+import tmEventSetup
+
+from .filters import vhdl_label, vhdl_expression, expr2html, vhdl2html
+from . import __version__
+
 __all__ = ['Reporter', ]
 
 esMuonTypes = (
@@ -194,12 +189,14 @@ class MenuStub:
         self.comment = es.getComment()
         self.algorithms = self._getAlgorithms(es)
         self.cuts = self._getCuts(self.algorithms)
+
     def _getAlgorithms(self, es):
         """Returns list of algorithm stubs sorted by index."""
         algorithmMapPtr = es.getAlgorithmMapPtr()
         algorithms = [AlgorithmStub(es, algorithm) for algorithm in es.getAlgorithmMapPtr().values()]
         algorithms.sort(key=lambda algorithm: algorithm.index)
         return algorithms
+
     def _getCuts(self, algorithms):
         """Returns sorted list of cut stubs."""
         cuts = {}
@@ -236,6 +233,7 @@ class AlgorithmStub:
         self.rpnVector = ptr.getRpnVector()
         self.comment = self._getComment(self.name, es) # not retrievable from esAlgorithm
         self.conditions = self._getConditions(es)
+
     def _getConditions(self, es):
         """Returns list of condition stubs assigned to algorithm, sorted by order of appereance."""
         conditionMapPtr = es.getConditionMapPtr()
@@ -245,8 +243,8 @@ class AlgorithmStub:
             if token in conditionMapPtr:
                 conditions[token] = ConditionStub(es, conditionMapPtr[token], token=mapping[token])
         conditions = conditions.values()
-        conditions.sort(key=lambda condition: self.rpnVector.index(condition.name))
-        return conditions
+        return sorted(conditions, key=lambda condition: self.rpnVector.index(condition.name))
+
     def _getMapping(self):
         """Returns token mapping."""
         mapping = {}
@@ -257,6 +255,7 @@ class AlgorithmStub:
         for i in range(len(vhdlTokens)):
             mapping[vhdlTokens[i]] = exprTokens[i]
         return mapping
+
     def _getComment(self, name, es):
         """Pick algorithm comment from raw algorithms."""
         algorithm = es._algorithms[name]
@@ -448,10 +447,10 @@ class Reporter(object):
 
     def write_html(self, filename):
         """Write HTML report to file, provided for convenience."""
-        with open(filename, 'wb') as handle:
+        with open(filename, 'w') as handle:
             handle.write(self.render_html())
 
     def write_twiki(self, filename):
         """Write TWIKI report to file, provided for convenience."""
-        with open(filename, 'wb') as handle:
+        with open(filename, 'w') as handle:
             handle.write(self.render_twiki())

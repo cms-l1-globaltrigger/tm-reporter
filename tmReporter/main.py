@@ -1,22 +1,27 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-import tmEventSetup
-import tmTable
-
-from tmReporter.reporter import Reporter
-from tmReporter import __version__
 
 import argparse
 import logging
 import sys, os
 
+import tmEventSetup
+import tmTable
+
+from .reporter import Reporter
+from . import __version__
+
+# Exit states
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
-# Available output modes
+# Package directories
+RootDir = os.path.dirname(__file__)
+TemplatesDir = os.path.join(RootDir, 'templates')
+
+# Available output Modes
 ModeHtml = 'html'
-ModeTWiki = 'twiki'
+ModeTwiki = 'twiki'
+Modes = [ModeHtml, ModeTwiki]
 
 def load_eventsetup(filename):
     """Load event setup and extend by original raw cuts from XML menu.
@@ -61,7 +66,7 @@ def parse():
     )
     parser.add_argument('-m', '--mode',
         default=ModeHtml,
-        choices=[ModeHtml, ModeTWiki],
+        choices=Modes,
         help="select output mode, default is `html')"
     )
     parser.add_argument('-o', '--outdir',
@@ -82,24 +87,13 @@ def main():
     # Setup console logging
     logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.DEBUG)
 
-    # Make sure utm library is available
-    utm_root = os.environ.get("UTM_ROOT")
-    logging.info("UTM_ROOT: %s", utm_root)
-    if not utm_root:
-        logging.error("no `UTM_ROOT' environment variable defined")
-        return EXIT_FAILURE
-
-    reporter_root = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
-
     try:
         # Load XML menu and write report.
         logging.info("loading XML menu %s", args.filename)
         eventSetup = load_eventsetup(args.filename)
 
-        template_dir = os.path.join(reporter_root, 'templates')
-
         logging.info("generating menu documentation...")
-        reporter = Reporter(template_dir, eventSetup)
+        reporter = Reporter(TemplatesDir, eventSetup)
         basename = eventSetup.getName()
 
         # Generate HTML output
@@ -109,7 +103,7 @@ def main():
             reporter.write_html(filename)
 
         # Generate TWIKI output
-        if args.mode == ModeTWiki:
+        if args.mode == ModeTwiki:
             filename = os.path.join(args.outdir, '{basename}.twiki'.format(**locals()))
             logging.info("writing TWIKI page template %s", filename)
             reporter.write_twiki(filename)
