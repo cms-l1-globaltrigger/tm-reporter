@@ -4,7 +4,7 @@ long_description = open('README.md').read()
 
 setup(
     name='tm-reporter',
-    version='2.7.0',
+    version='2.7.1',
     url="https://github.com/cms-l1-globaltrigger/tm-reporter",
     author="Bernhard Arnold",
     author_email="bernhard.arnold@cern.ch",
@@ -18,12 +18,12 @@ setup(
     },
     install_requires=[
         'Jinja2',
-        #'tmTable>=0.7.3',
-        #'tmEventSetup>=0.7.3',
+        'tm-table>=0.7.3',
+        'tm-eventsetup>=0.7.3',
     ],
     entry_points={
         'console_scripts': [
-            'tm-reporter = tmReporter.main:main',
+            'tm-reporter = tmReporter.__main__:main',
         ],
     },
     test_suite='tests',
