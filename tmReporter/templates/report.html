@@ -167,6 +167,9 @@
                   {% if cut.cutType == es.Threshold %}
                     Threshold: {{ cut.minimumValue|round(1) }} GeV
                     : <code>0x{{ cut.minimumIndex|hex }}</code>
+                  {% elif cut.cutType == es.UnconstrainedPt %}
+                    Unconstrained Pt: <a href="#{{ cut.name }}">{{ cut.name }}</a> [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}] GeV
+                    : <code>[0x{{ cut.minimumIndex|hex }}, 0x{{ cut.maximumIndex|hex }}]</code>
                   {% elif cut.cutType == es.Eta %}
                     Eta: <a href="#{{ cut.name }}">{{ cut.name }}</a> [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
                     : <code>[0x{{ cut.minimumIndex|hex }}, 0x{{ cut.maximumIndex|hex }}]</code>
@@ -177,10 +180,13 @@
                     Charge: <a href="#{{ cut.name }}">{{ cut.name }}</a>
                     : <code>{{ cut.data }}</code>
                   {% elif cut.cutType == es.Quality %}
-                    Quality: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
-                    <code>0x{{ cut.data|int|hex(4) }}</code>
+                    Quality: <a href="#{{ cut.name }}">{{ cut.name }}</a>
+                    : <code>0x{{ cut.data|int|hex(4) }}</code>
                   {% elif cut.cutType == es.Isolation %}
-                    Isolation: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
+                    Isolation: <a href="#{{ cut.name }}">{{ cut.name }}</a>
+                    : <code>0x{{ cut.data|int|hex(4) }}</code>
+                  {% elif cut.cutType == es.ImpactParameter %}
+                    Impact Parameter: <a href="#{{ cut.name }}">{{ cut.name }}</a>
                     : <code>0x{{ cut.data|int|hex(4) }}</code>
                   {% elif cut.cutType == es.Slice %}
                     {% if cut.minimumValue == cut.maximumValue %}
@@ -272,8 +278,8 @@
         <td><a class="anchor" name="{{ cut.name }}"></a> {{ cut.name }}</td>
         <td>{% if not cut.data %}{{ cut.minimumValueRaw|round(3) }}{% endif %}</td>
         <td>{% if not cut.data and cut.cutType != es.Count %}{{ cut.maximumValueRaw|round(3) }}{% endif %}</td>
-        <td>{% if not cut.data %}<code>{{ cut.minimumValue|round(3) }}</code>{% endif %}</td>
-        <td>{% if not cut.data and cut.cutType != es.Count %}<code>{{ cut.maximumValue|round(3) }}</code>{% endif %}</td>
+        <td>{% if not cut.data %}<code>{{ cut.minimumIndex|round(3) }}</code>{% endif %}</td>
+        <td>{% if not cut.data and cut.cutType != es.Count %}<code>{{ cut.maximumIndex|round(3) }}</code>{% endif %}</td>
         <td>{% if cut.data %}<code>0x{{ cut.data|int|hex(4) }}</code>{% endif %}</td>
       </tr>
 {%- endfor %}

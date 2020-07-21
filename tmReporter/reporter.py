@@ -99,6 +99,7 @@ esCorrelationTypes = (
 
 esMassTypes = (
     tmEventSetup.InvariantMass,
+    tmEventSetup.InvariantMass3,
     tmEventSetup.TransverseMass,
     tmEventSetup.InvariantMassOvRm,
 )
@@ -133,11 +134,13 @@ esTriggerGroups = (
 
 esCutType = {
     tmEventSetup.Threshold: 'Threshold',
+    tmEventSetup.UnconstrainedPt: 'UnconstrainedPt',
     tmEventSetup.Eta: 'Eta',
     tmEventSetup.Phi: 'Phi',
     tmEventSetup.Charge: 'Charge',
     tmEventSetup.Quality: 'Quality',
     tmEventSetup.Isolation: 'Isolation',
+    tmEventSetup.ImpactParameter: 'ImpactParameter',
     tmEventSetup.DeltaEta: 'DeltaEta',
     tmEventSetup.DeltaPhi: 'DeltaPhi',
     tmEventSetup.DeltaR: 'DeltaR',
@@ -318,21 +321,27 @@ class CutStub:
         self.name = ptr.getName()
         self.objectType = ptr.getObjectType()
         self.cutType = ptr.getCutType()
+        self.minimumIndex = ptr.getMinimumIndex()
+        self.maximumIndex = ptr.getMaximumIndex()
         self.minimumValue = ptr.getMinimumValue()
         self.maximumValue = ptr.getMaximumValue()
         # HACK Extend cut with raw values
-        if self.cutType in [tmEventSetup.Threshold]:
+        if self.cutType in [tmEventSetup.Threshold, tmEventSetup.UnconstrainedPt]:
             self.minimumValueRaw = self.minimumValue
             self.maximumValueRaw = self.maximumValue
         elif self.cutType in [tmEventSetup.Count]:
             self.minimumValueRaw = self.minimumValue
             self.maximumValueRaw = self.minimumValue
-        else:
+        elif self.cutType in [tmEventSetup.DeltaEta, tmEventSetup.DeltaPhi, tmEventSetup.DeltaR, tmEventSetup.Mass, tmEventSetup.OvRmDeltaEta, tmEventSetup.OvRmDeltaPhi, tmEventSetup.OvRmDeltaR, ]:
+            # Get raw non-eventsetup converted values!
             cut = es._cuts[self.name]
             self.minimumValueRaw = float(cut['minimum'])
             self.maximumValueRaw = float(cut['maximum'])
-        self.minimumIndex = ptr.getMinimumIndex()
-        self.maximumIndex = ptr.getMaximumIndex()
+            self.minimumIndex = self.minimumValue
+            self.maximumIndex = self.maximumValue
+        else:
+            self.minimumValueRaw = self.minimumValue
+            self.maximumValueRaw = self.maximumValue
         self.precision = ptr.getPrecision()
         self.data = ptr.getData()
         self.key = ptr.getKey()
