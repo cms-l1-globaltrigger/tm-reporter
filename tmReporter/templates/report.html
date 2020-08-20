@@ -112,6 +112,7 @@
       <li class="list-group-item"><strong>Grammar Version:</strong> {{ menu.grammar_version }}</li>
       <li class="list-group-item"><strong>Scale Set:</strong> {{ menu.scale_set }}</li>
       <li class="list-group-item"><strong>External Signals Set:</strong> {{ menu.externals_set }}</li>
+      <li class="list-group-item"><strong>Labels:</strong> {{ menu.labels|join(', ') }}</li>
     </ul>
     <hr />
 
@@ -125,11 +126,13 @@
       <tr>
         <th>Index</th>
         <th>Name</th>
+        <th>Labels</th>
       </tr>
 {%- for algorithm in menu.algorithms %}
       <tr>
         <td><a href=#{{ algorithm.name }}>{{ algorithm.index }}</a></td>
         <td><a href=#{{ algorithm.name }}>{{ algorithm.name }}</a></td>
+        <td>{{ algorithm.labels|join(', ') }}</td>
       </tr>
 {%- endfor %}
     </table>
@@ -150,13 +153,22 @@
 
   {%- if algorithm.comment %}
         <p><strong>Comment</strong></p>
-        <p><pre>{{ algorithm.comment }}</pre></p>
+        <p>{{ algorithm.comment|replace('\n', '<br />') }}</p>
+  {% endif %}
+
+  {%- if algorithm.labels %}
+        <p><strong>Labels</strong></p>
+        <ul>
+        {%- for label in algorithm.labels %}
+          <li>{{ label }}</li>
+        {%- endfor %}
+        </ul>
   {% endif %}
 
         <p><strong>Conditions</strong></p>
         <ul>
   {%- for condition in algorithm.conditions %}
-        <li><strong>{{ condition.token }}</strong> : <code>{{ condition.name|vhdlLabel }}</code>
+        <li><strong>{{ condition.token|replace(',', ', ') }}</strong> : <code>{{ condition.name|vhdlLabel }}</code>
           <ul>
     {#- TODO: getting bit messy, divide loop in suitable blocks? -#}
     {%- for object in condition.objects %}
@@ -167,6 +179,9 @@
                   {% if cut.cutType == es.Threshold %}
                     Threshold: {{ cut.minimumValue|round(1) }} GeV
                     : <code>0x{{ cut.minimumIndex|hex }}</code>
+                  {% elif cut.cutType == es.UnconstrainedPt %}
+                    Unconstrained Pt: <a href="#{{ cut.name }}">{{ cut.name }}</a> [{{ cut.minimumValue|round(1) }}, {{ cut.maximumValue|round(1) }}]
+                    : <code>[0x{{ cut.minimumIndex|hex }}, 0x{{ cut.maximumIndex|hex }}]</code>
                   {% elif cut.cutType == es.Eta %}
                     Eta: <a href="#{{ cut.name }}">{{ cut.name }}</a> [{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]
                     : <code>[0x{{ cut.minimumIndex|hex }}, 0x{{ cut.maximumIndex|hex }}]</code>
@@ -181,6 +196,9 @@
                     <code>0x{{ cut.data|int|hex(4) }}</code>
                   {% elif cut.cutType == es.Isolation %}
                     Isolation: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
+                    : <code>0x{{ cut.data|int|hex(4) }}</code>
+                  {% elif cut.cutType == es.ImpactParameter %}
+                    Impact Parameter: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
                     : <code>0x{{ cut.data|int|hex(4) }}</code>
                   {% elif cut.cutType == es.Slice %}
                     {% if cut.minimumValue == cut.maximumValue %}
@@ -205,44 +223,60 @@
     {%- for cut in condition.cuts %}
             <li>Cut: <a href="#{{ cut.name }}">{{ cut.name }}</a></li>
             <ul><li>
-              {% if cut.cutType == es.DeltaEta %}
-                Delta-Eta: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
-                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.DeltaPhi %}
-                Delta-Phi: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValue|round(3) }}]
-                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.DeltaR %}
-                Delta-R: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
-                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.OvRmDeltaEta %}
-                ORM-Delta-Eta: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
-                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.OvRmDeltaPhi %}
-                ORM-Delta-Phi: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
-                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.OvRmDeltaR %}
-                ORM-Delta-R: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
-                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.Mass %}
-                Mass: [{{ cut.minimumValueRaw|round(3) }}, {{ cut.maximumValueRaw|round(3) }}]
-                : <code>[{{ cut.minimumValue|round(3) }}, {{ cut.maximumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.TwoBodyPt %}
-                TwoBodyPt: {{ cut.minimumValueRaw|round(3) }}
-                : <code>[{{ cut.minimumValue|round(3) }}]</code>
-                  <code>precision: {{ cut.precision|int }}</code>
-              {% elif cut.cutType == es.ChargeCorrelation %}
-                Charge Correaltion: <code>{{ cut.data }}</code>
-              {% else %}
-                esType[{{ cut.cutType }}]: [{{ cut.minimumValue }}, {{ cut.maximumValue }}],{{ cut.data }}
-              {% endif %}
-          </li></ul>
+              {%- set precision = cut.precision|int %}
+              {%- set minimumRaw = cut.minimumValueRaw|round(precision) %}
+              {%- set maximumRaw = cut.maximumValueRaw|round(precision) %}
+              {%- set minimum = cut.minimumValue|round(precision) %}
+              {%- set maximum = cut.maximumValue|round(precision) %}
+              {%- set data = cut.data %}
+              {%- if cut.cutType == es.DeltaEta %}
+                Delta-Eta: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.DeltaPhi %}
+                Delta-Phi: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.DeltaR %}
+                Delta-R: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.OvRmDeltaEta %}
+                ORM-Delta-Eta: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.OvRmDeltaPhi %}
+                ORM-Delta-Phi: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.OvRmDeltaR %}
+                ORM-Delta-R: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.Mass %}
+                Mass: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.MassUpt %}
+                Mass unconstrained Pt: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.MassDeltaR %}
+                Mass/DeltaR: [{{ minimumRaw }}]
+                : <code>[{{ minimum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.TwoBodyPt %}
+                TwoBodyPt: [{{ minimumRaw }}]
+                : <code>[{{ minimum }}]</code>
+                  <code>precision: {{ precision }}</code>
+              {%- elif cut.cutType == es.ChargeCorrelation %}
+                Charge Correaltion: <code>{{ data }}</code>
+              {%- else %}
+                esType[{{ cut.cutType }}]: [{{ minimumRaw }}, {{ maximumRaw }}]
+                : <code>[{{ minimum }}, {{ maximum }}]</code>,
+                  <code>{{ data }}</code>
+              {%- endif %}
+            </li></ul>
     {%- endfor %}
           </ul>
         </li>

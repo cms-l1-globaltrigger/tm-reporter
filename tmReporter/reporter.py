@@ -99,6 +99,9 @@ esCorrelationTypes = (
 
 esMassTypes = (
     tmEventSetup.InvariantMass,
+    tmEventSetup.InvariantMass3,
+    tmEventSetup.InvariantMassUpt,
+    tmEventSetup.InvariantMassDeltaR,
     tmEventSetup.TransverseMass,
     tmEventSetup.InvariantMassOvRm,
 )
@@ -138,10 +141,14 @@ esCutType = {
     tmEventSetup.Charge: 'Charge',
     tmEventSetup.Quality: 'Quality',
     tmEventSetup.Isolation: 'Isolation',
+    tmEventSetup.ImpactParameter: 'ImpactParameter',
+    tmEventSetup.UnconstrainedPt: 'UnconstrainedPt',
     tmEventSetup.DeltaEta: 'DeltaEta',
     tmEventSetup.DeltaPhi: 'DeltaPhi',
     tmEventSetup.DeltaR: 'DeltaR',
     tmEventSetup.Mass: 'Mass',
+    tmEventSetup.MassUpt: 'MassUpt',
+    tmEventSetup.MassDeltaR: 'MassDeltaR',
     tmEventSetup.TwoBodyPt: 'TwoBodyPt',
     tmEventSetup.Slice: 'Slice',
     tmEventSetup.OvRmDeltaEta: 'OvRmDeltaEta',
@@ -189,6 +196,7 @@ class MenuStub:
         self.comment = es.getComment()
         self.algorithms = self._getAlgorithms(es)
         self.cuts = self._getCuts(self.algorithms)
+        self.labels = self._getLabels(self.algorithms)
 
     def _getAlgorithms(self, es):
         """Returns list of algorithm stubs sorted by index."""
@@ -211,6 +219,13 @@ class MenuStub:
                             cuts[cut.name] = copy.deepcopy(cut)
         return sorted(cuts.values(), key=lambda cut: (cut.cutType, cut.objectType))
 
+    def _getLabels(self, algorithms):
+        """Returns sorted list of seed labels."""
+        labels = set()
+        for algorithm in algorithms:
+            labels.update(algorithm.labels)
+        return sorted(labels)
+
 class AlgorithmStub:
     """Algorithm template helper class.
     name            full algorithm name
@@ -232,6 +247,7 @@ class AlgorithmStub:
         self.vhdlExpression = ptr.getExpressionInCondition()
         self.rpnVector = ptr.getRpnVector()
         self.comment = self._getComment(self.name, es) # not retrievable from esAlgorithm
+        self.labels = self._getLabels(self.name, es) # not retrievable from esAlgorithm
         self.conditions = self._getConditions(es)
 
     def _getConditions(self, es):
@@ -262,6 +278,13 @@ class AlgorithmStub:
         if 'comment' in algorithm:
             return algorithm['comment']
         return ""
+
+    def _getLabels(self, name, es):
+        """Pick algorithm labels from raw algorithms."""
+        algorithm = es._algorithms[name]
+        if 'labels' in algorithm:
+            return sorted(algorithm['labels'].split(','))
+        return []
 
 class ConditionStub:
     """Condition template helper class.
