@@ -4,7 +4,7 @@ long_description = open('README.md').read()
 
 setup(
     name='tm-reporter',
-    version='2.8.0',
+    version='2.8.1',
     url="https://github.com/cms-l1-globaltrigger/tm-reporter",
     author="Bernhard Arnold",
     author_email="bernhard.arnold@cern.ch",
@@ -18,7 +18,7 @@ setup(
     },
     install_requires=[
         'Jinja2',
-        'tm-python @ git+https://github.com/cms-l1-globaltrigger/tm-python@0.8.0'
+        'tm-python @ git+https://github.com/cms-l1-globaltrigger/tm-python@0.8.1'
     ],
     entry_points={
         'console_scripts': [
