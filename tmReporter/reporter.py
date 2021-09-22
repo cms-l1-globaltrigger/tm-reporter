@@ -86,6 +86,10 @@ esSignalTypes = (
     tmEventSetup.Centrality5,
     tmEventSetup.Centrality6,
     tmEventSetup.Centrality7,
+    tmEventSetup.MuonShower0,
+    tmEventSetup.MuonShower1,
+    tmEventSetup.MuonShowerOutOfTime0,
+    tmEventSetup.MuonShowerOutOfTime1,
 )
 
 esCorrelationTypes = (
