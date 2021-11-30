@@ -1,2 +1,2 @@
 Jinja2==2.*
-tm-python @ git+https://github.com/cms-l1-globaltrigger/tm-python@0.9.1
+tm-python @ git+https://github.com/cms-l1-globaltrigger/tm-python@0.10.0

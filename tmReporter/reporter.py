@@ -145,6 +145,7 @@ esCutType = {
     tmEventSetup.Charge: 'Charge',
     tmEventSetup.Quality: 'Quality',
     tmEventSetup.Isolation: 'Isolation',
+    tmEventSetup.Displaced: 'Displaced',
     tmEventSetup.ImpactParameter: 'ImpactParameter',
     tmEventSetup.UnconstrainedPt: 'UnconstrainedPt',
     tmEventSetup.DeltaEta: 'DeltaEta',
