@@ -197,6 +197,9 @@
                   {% elif cut.cutType == es.Isolation %}
                     Isolation: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
                     : <code>0x{{ cut.data|int|hex(4) }}</code>
+                  {% elif cut.cutType == es.Displaced %}
+                    Displaced: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
+                    <code>{{ cut.data|int }}</code>
                   {% elif cut.cutType == es.ImpactParameter %}
                     Impact Parameter: <a href="#{{ cut.name }}">{{ cut.name }}</a>:
                     : <code>0x{{ cut.data|int|hex(4) }}</code>
