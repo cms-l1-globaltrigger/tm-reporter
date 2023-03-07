@@ -10,7 +10,7 @@ import tmEventSetup
 from .filters import vhdl_label, vhdl_expression, expr2html, vhdl2html
 from . import __version__
 
-__all__ = ['Reporter', ]
+__all__ = ["Reporter"]
 
 esMuonTypes = (
     tmEventSetup.SingleMuon,
@@ -139,33 +139,30 @@ esTriggerGroups = (
 )
 
 esCutType = {
-    tmEventSetup.Threshold: 'Threshold',
-    tmEventSetup.Eta: 'Eta',
-    tmEventSetup.Phi: 'Phi',
-    tmEventSetup.Charge: 'Charge',
-    tmEventSetup.Quality: 'Quality',
-    tmEventSetup.Isolation: 'Isolation',
-    tmEventSetup.Displaced: 'Displaced',
-    tmEventSetup.ImpactParameter: 'ImpactParameter',
-    tmEventSetup.UnconstrainedPt: 'UnconstrainedPt',
-    tmEventSetup.DeltaEta: 'DeltaEta',
-    tmEventSetup.DeltaPhi: 'DeltaPhi',
-    tmEventSetup.DeltaR: 'DeltaR',
-    tmEventSetup.Mass: 'Mass',
-    tmEventSetup.MassUpt: 'MassUpt',
-    tmEventSetup.MassDeltaR: 'MassDeltaR',
-    tmEventSetup.TwoBodyPt: 'TwoBodyPt',
-    tmEventSetup.Slice: 'Slice',
-    tmEventSetup.OvRmDeltaEta: 'OvRmDeltaEta',
-    tmEventSetup.OvRmDeltaPhi: 'OvRmDeltaPhi',
-    tmEventSetup.OvRmDeltaR: 'OvRmDeltaR',
-    tmEventSetup.ChargeCorrelation: 'ChargeCorrelation',
-    tmEventSetup.Count: 'Count',
+    tmEventSetup.Threshold: "Threshold",
+    tmEventSetup.Eta: "Eta",
+    tmEventSetup.Phi: "Phi",
+    tmEventSetup.Charge: "Charge",
+    tmEventSetup.Quality: "Quality",
+    tmEventSetup.Isolation: "Isolation",
+    tmEventSetup.Displaced: "Displaced",
+    tmEventSetup.ImpactParameter: "ImpactParameter",
+    tmEventSetup.UnconstrainedPt: "UnconstrainedPt",
+    tmEventSetup.DeltaEta: "DeltaEta",
+    tmEventSetup.DeltaPhi: "DeltaPhi",
+    tmEventSetup.DeltaR: "DeltaR",
+    tmEventSetup.Mass: "Mass",
+    tmEventSetup.MassUpt: "MassUpt",
+    tmEventSetup.MassDeltaR: "MassDeltaR",
+    tmEventSetup.TwoBodyPt: "TwoBodyPt",
+    tmEventSetup.Slice: "Slice",
+    tmEventSetup.OvRmDeltaEta: "OvRmDeltaEta",
+    tmEventSetup.OvRmDeltaPhi: "OvRmDeltaPhi",
+    tmEventSetup.OvRmDeltaR: "OvRmDeltaR",
+    tmEventSetup.ChargeCorrelation: "ChargeCorrelation",
+    tmEventSetup.Count: "Count",
 }
 
-# -----------------------------------------------------------------------------
-#  Helpers
-# -----------------------------------------------------------------------------
 
 def getenv(name):
     """Get environment variable. Raises a RuntimeError exception if variable not set."""
@@ -174,9 +171,6 @@ def getenv(name):
         raise RuntimeError("`{name}' environment not set".format(**locals()))
     return value
 
-# -----------------------------------------------------------------------------
-#  Structs
-# -----------------------------------------------------------------------------
 
 class MenuStub:
     """Menu template helper class.
@@ -231,6 +225,7 @@ class MenuStub:
             labels.update(algorithm.labels)
         return sorted(labels)
 
+
 class AlgorithmStub:
     """Algorithm template helper class.
     name            full algorithm name
@@ -270,8 +265,8 @@ class AlgorithmStub:
         """Returns token mapping."""
         mapping = {}
         # split expression and vhdl expression and try to map the tokens, thats just completely manky
-        vhdlTokens = re.sub(r'[\(\)]', ' ', self.vhdlExpression).split() # remove braces and split
-        exprTokens = re.sub(r'[\(\)]', ' ', self.expression).split()
+        vhdlTokens = re.sub(r"[\(\)]", " ", self.vhdlExpression).split() # remove braces and split
+        exprTokens = re.sub(r"[\(\)]", " ", self.expression).split()
         assert len(vhdlTokens) == len(exprTokens)
         for i in range(len(vhdlTokens)):
             mapping[vhdlTokens[i]] = exprTokens[i]
@@ -280,16 +275,17 @@ class AlgorithmStub:
     def _getComment(self, name, es):
         """Pick algorithm comment from raw algorithms."""
         algorithm = es._algorithms[name]
-        if 'comment' in algorithm:
-            return algorithm['comment']
+        if "comment" in algorithm:
+            return algorithm["comment"]
         return ""
 
     def _getLabels(self, name, es):
         """Pick algorithm labels from raw algorithms."""
         algorithm = es._algorithms[name]
-        if 'labels' in algorithm:
-            return sorted(algorithm['labels'].split(','))
+        if "labels" in algorithm:
+            return sorted(algorithm["labels"].split(","))
         return []
+
 
 class ConditionStub:
     """Condition template helper class.
@@ -305,6 +301,7 @@ class ConditionStub:
         self.objects = [ObjectStub(es, obj) for obj in ptr.getObjects()]
         self.cuts = [CutStub(es, cut) for cut in ptr.getCuts()]
         self.token = token or "" # store the expression notation for display purposes
+
 
 class ObjectStub:
     """Object template helper class.
@@ -326,6 +323,7 @@ class ObjectStub:
         self.extSignalName = ptr.getExternalSignalName()
         self.extChannelId = ptr.getExternalChannelId()
         self.cuts = [CutStub(es, cut) for cut in ptr.getCuts()]
+
 
 class CutStub:
     """Cut template helper class.
@@ -357,8 +355,8 @@ class CutStub:
             self.maximumValueRaw = self.minimumValue
         else:
             cut = es._cuts[self.name]
-            self.minimumValueRaw = float(cut['minimum'])
-            self.maximumValueRaw = float(cut['maximum'])
+            self.minimumValueRaw = float(cut["minimum"])
+            self.maximumValueRaw = float(cut["maximum"])
         self.minimumIndex = ptr.getMinimumIndex()
         self.maximumIndex = ptr.getMaximumIndex()
         self.precision = ptr.getPrecision()
@@ -366,36 +364,29 @@ class CutStub:
         self.key = ptr.getKey()
 
 
-# -----------------------------------------------------------------------------
-#  Template engines with custom resource loader environment.
-# -----------------------------------------------------------------------------
+class TemplateEngine:
+    """Custom template engine with resource loader environment.."""
 
-class TemplateEngine(object):
-    """Custom tempalte engine class."""
-
-    def __init__(self, searchpath, encoding='utf-8'):
+    def __init__(self, searchpath, encoding=None):
         # Create Jinja environment.
-        loader = FileSystemLoader(searchpath, encoding)
+        loader = FileSystemLoader(searchpath, encoding or "utf-8")
         self.environment = Environment(loader=loader, undefined=StrictUndefined)
         # Add filters
-        self.environment.filters['exprColorize'] = expr2html
-        self.environment.filters['vhdlColorize'] = vhdl2html
-        self.environment.filters['vhdlLabel'] = vhdl_label
-        self.environment.filters['vhdlExpression'] = vhdl_expression
-        def html_newlines(value): return value.replace('\n', '<br/>\n')
-        self.environment.filters['htmlNewlines'] = html_newlines
-        def hex(value, n=1): return format(value, '0{n}x'.format(n=n))
-        self.environment.filters['hex'] = hex
+        self.environment.filters["exprColorize"] = expr2html
+        self.environment.filters["vhdlColorize"] = vhdl2html
+        self.environment.filters["vhdlLabel"] = vhdl_label
+        self.environment.filters["vhdlExpression"] = vhdl_expression
+        def html_newlines(value): return value.replace("\n", "<br/>\n")
+        self.environment.filters["htmlNewlines"] = html_newlines
+        def hex(value, n=1): return format(value, "0{n}x".format(n=n))
+        self.environment.filters["hex"] = hex
 
     def render(self, template, data={}):
         template = self.environment.get_template(template)
         return template.render(data)
 
-# -----------------------------------------------------------------------------
-#  Reporter class
-# -----------------------------------------------------------------------------
 
-class Reporter(object):
+class Reporter:
     """Reporter class."""
 
     def __init__(self, searchpath, eventSetup):
@@ -464,21 +455,21 @@ class Reporter(object):
                 version=__version__,
             ),
         )
-        return TemplateEngine(self.searchpath).render('report.html', data)
+        return TemplateEngine(self.searchpath).render("report.html", data)
 
     def render_twiki(self):
         """Render TWIKI report."""
         menu = MenuStub(self.eventSetup)
         menu.triggerGroups = self.getTriggerGroups(menu)
         data = dict(menu=menu)
-        return TemplateEngine(self.searchpath).render('report.twiki', data)
+        return TemplateEngine(self.searchpath).render("report.twiki", data)
 
     def write_html(self, filename):
         """Write HTML report to file, provided for convenience."""
-        with open(filename, 'w') as handle:
+        with open(filename, "wt") as handle:
             handle.write(self.render_html())
 
     def write_twiki(self, filename):
         """Write TWIKI report to file, provided for convenience."""
-        with open(filename, 'w') as handle:
+        with open(filename, "wt") as handle:
             handle.write(self.render_twiki())
