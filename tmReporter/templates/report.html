@@ -213,6 +213,12 @@
                   {% elif cut.cutType == es.Count %}
                     Count: <a href="#{{ cut.name }}">{{ cut.name }}</a> {{ cut.minimumValue|round|int }}
                     : <code>0x{{ cut.minimumIndex|hex }}</code>
+                  {% elif cut.cutType == es.Index %}
+                    Index: <a href="#{{ cut.name }}">{{ cut.name }}</a> {{ cut.minimumValue|round|int }}
+                    : <code>0x{{ cut.minimumIndex|hex }}</code>
+                  {% elif cut.cutType == es.AnomalyScore %}
+                    AnomalyScore: <a href="#{{ cut.name }}">{{ cut.name }}</a> {{ cut.minimumValue|round|int }}
+                    : <code>0x{{ cut.minimumValue|round|int|hex }}</code>
                   {% else %}
                     esType[{{ cut.cutType }}]: [{{ cut.minimumValue }}, {{ cut.maximumValue }}],{{ cut.data }}
                   {% endif %}
@@ -308,9 +314,9 @@
       <tr>
         <td><a class="anchor" name="{{ cut.name }}"></a> {{ cut.name }}</td>
         <td>{% if not cut.data %}{{ cut.minimumValueRaw|round(3) }}{% endif %}</td>
-        <td>{% if not cut.data and cut.cutType != es.Count %}{{ cut.maximumValueRaw|round(3) }}{% endif %}</td>
+        <td>{% if not cut.data and cut.cutType not in [es.Count, es.AnomalyScore] %}{{ cut.maximumValueRaw|round(3) }}{% endif %}</td>
         <td>{% if not cut.data %}<code>{{ cut.minimumValue|round(3) }}</code>{% endif %}</td>
-        <td>{% if not cut.data and cut.cutType != es.Count %}<code>{{ cut.maximumValue|round(3) }}</code>{% endif %}</td>
+        <td>{% if not cut.data and cut.cutType not in [es.Count, es.AnomalyScore] %}<code>{{ cut.maximumValue|round(3) }}</code>{% endif %}</td>
         <td>{% if cut.data %}<code>0x{{ cut.data|int|hex(4) }}</code>{% endif %}</td>
       </tr>
 {%- endfor %}

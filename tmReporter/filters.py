@@ -1,58 +1,64 @@
 import string
 import re
+from typing import Dict, List, Optional
 
-__all__ = ['snakecase', 'vhdl_label', 'vhdl_expression', 'expr2html', 'vhdl2html']
+__all__ = [
+    "snakecase",
+    "vhdl_label",
+    "vhdl_expression",
+    "expr2html",
+    "vhdl2html",
+]
 
-# -----------------------------------------------------------------------------
-#  Precompiled regular expressions
-# -----------------------------------------------------------------------------
+# Precompiled regular expressions
+RegexCamelSnake1 = re.compile(r"([^_])([A-Z][a-z]+)")
+RegexCamelSnake2 = re.compile(r"([a-z0-9])([A-Z])")
+RegexVhdlLabel = re.compile(r"[^A-Za-z0-9_]")
 
-RegexCamelSnake1 = re.compile(r'([^_])([A-Z][a-z]+)')
-RegexCamelSnake2 = re.compile('([a-z0-9])([A-Z])')
-RegexVhdlLabel = re.compile('[^A-Za-z0-9_]')
 
-# -----------------------------------------------------------------------------
-#  Jinja Filters
-# -----------------------------------------------------------------------------
-
-def snakecase(label, separator='_'):
+def snakecase(label, separator: Optional[str] = None) -> str:
     """Transformes camel case label to spaced lower case (snaked) label.
-    >>> snakecase('CamelCaseLabel')
+    >>> snakecase("CamelCaseLabel")
     'camel_case_label'
     """
-    subbed = RegexCamelSnake1.sub(r'\1{sep}\2'.format(sep=separator), label)
-    return RegexCamelSnake2.sub(r'\1{sep}\2'.format(sep=separator), subbed).lower()
+    if separator is None:
+        separator = "_"
+    subbed = RegexCamelSnake1.sub(r"\1{sep}\2".format(sep=separator), label)
+    return RegexCamelSnake2.sub(r"\1{sep}\2".format(sep=separator), subbed).lower()
 
-def vhdl_label(label):
+
+def vhdl_label(label: str) -> str:
     """Return normalized VHDL label for signal or instance names.
-    >>> vhdl_label('001FooBar.value__@2_')
+    >>> vhdl_label("001FooBar.value__@2_")
     'd001_foo_bar_value_2'
     """
-    label = RegexVhdlLabel.sub('_', label.strip()) # Replace unsave characters by underscore.
+    label = RegexVhdlLabel.sub("_", label.strip()) # Replace unsave characters by underscore.
     # Suppress multible underlines (VHDL spec)
-    label = re.sub(r'[_]+', r'_', label)
+    label = re.sub(r"[_]+", r"_", label)
     # Suppress leading/trailing underlines (VHDL spec)
-    label = label.strip('_')
+    label = label.strip("_")
     # Prepend char if starts with digit (starting with underline not allowed in VHDL spec).
     if label[0] in string.digits:
-        label = ''.join(('d', label))
+        label = "".join(("d", label))
     return snakecase(label)
 
-def vhdl_expression(expression):
+
+def vhdl_expression(expression: str) -> str:
     """Return safe VHDL expression string using normalized signals for conditions.
-    >>> vhdl_expression('(singleMu_1 and doubleMu_2)')
+    >>> vhdl_expression("(singleMu_1 and doubleMu_2)")
     '( single_mu_1 and double_mu_2 )'
     """
-    expression = re.sub(r'([\(\)])', r' \1 ', expression) # separate braces
-    expression = re.sub(r'[\ ]+', r' ', expression) # suppress multiple spaces
+    expression = re.sub(r"([\(\)])", r" \1 ", expression) # separate braces
+    expression = re.sub(r"[\ ]+", r" ", expression) # suppress multiple spaces
     tokens = []
     for token in expression.split():
-        if token not in ['(', ')']:
+        if token not in ["(", ")"]:
             token = vhdl_label(token)
         tokens.append(token)
-    return ' '.join(tokens)
+    return " ".join(tokens)
 
-def expr2html(expression):
+
+def expr2html(expression: str) -> str:
     """Returns HTML formatted expression representation.
     Applied CSS classes: .function, .curl, .keyword
     """
@@ -68,7 +74,8 @@ def expr2html(expression):
         expression = re.sub(pattern, repl, expression)
     return expression
 
-def vhdl2html(expression):
+
+def vhdl2html(expression: str) -> str:
     """Returns HTML formatted VHDL expression representation.
     Applied CSS classes: .vhdlsig, .vhdlop
     """
