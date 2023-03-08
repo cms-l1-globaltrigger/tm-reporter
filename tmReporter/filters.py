@@ -1,5 +1,6 @@
 import string
 import re
+from typing import Dict, List, Optional
 
 __all__ = [
     "snakecase",
@@ -15,7 +16,7 @@ RegexCamelSnake2 = re.compile(r"([a-z0-9])([A-Z])")
 RegexVhdlLabel = re.compile(r"[^A-Za-z0-9_]")
 
 
-def snakecase(label, separator=None):
+def snakecase(label, separator: Optional[str] = None) -> str:
     """Transformes camel case label to spaced lower case (snaked) label.
     >>> snakecase("CamelCaseLabel")
     'camel_case_label'
@@ -26,7 +27,7 @@ def snakecase(label, separator=None):
     return RegexCamelSnake2.sub(r"\1{sep}\2".format(sep=separator), subbed).lower()
 
 
-def vhdl_label(label):
+def vhdl_label(label: str) -> str:
     """Return normalized VHDL label for signal or instance names.
     >>> vhdl_label("001FooBar.value__@2_")
     'd001_foo_bar_value_2'
@@ -42,7 +43,7 @@ def vhdl_label(label):
     return snakecase(label)
 
 
-def vhdl_expression(expression):
+def vhdl_expression(expression: str) -> str:
     """Return safe VHDL expression string using normalized signals for conditions.
     >>> vhdl_expression("(singleMu_1 and doubleMu_2)")
     '( single_mu_1 and double_mu_2 )'
@@ -57,7 +58,7 @@ def vhdl_expression(expression):
     return " ".join(tokens)
 
 
-def expr2html(expression):
+def expr2html(expression: str) -> str:
     """Returns HTML formatted expression representation.
     Applied CSS classes: .function, .curl, .keyword
     """
@@ -74,7 +75,7 @@ def expr2html(expression):
     return expression
 
 
-def vhdl2html(expression):
+def vhdl2html(expression: str) -> str:
     """Returns HTML formatted VHDL expression representation.
     Applied CSS classes: .vhdlsig, .vhdlop
     """
