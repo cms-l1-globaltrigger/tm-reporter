@@ -7,7 +7,7 @@ Install using pip (>= 19.0).
 
 ```bash
 pip install --upgrade pip
-pip install git+https://github.com/cms-l1-globaltrigger/tm-reporter.git@2.11.2
+pip install git+https://github.com/cms-l1-globaltrigger/tm-reporter.git@2.11.3
 ```
 
 ## Basic usage
