@@ -96,6 +96,7 @@ esSignalTypes: List[int] = [
     tmEventSetup.MuonShowerOutOfTime0,
     tmEventSetup.MuonShowerOutOfTime1,
     tmEventSetup.AnomalyDetectionTrigger,
+    tmEventSetup.CicadaTrigger,
 ]
 
 esCorrelationTypes: List[int] = [
