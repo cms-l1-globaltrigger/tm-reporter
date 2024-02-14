@@ -95,7 +95,8 @@ esSignalTypes: List[int] = [
     tmEventSetup.MuonShower2,
     tmEventSetup.MuonShowerOutOfTime0,
     tmEventSetup.MuonShowerOutOfTime1,
-    tmEventSetup.Axol1tlTrigger,
+    tmEventSetup.AnomalyDetectionTrigger,
+    tmEventSetup.AxoTrigger,
     tmEventSetup.TopologicalTrigger,
     tmEventSetup.CicadaTrigger,
 ]
@@ -170,6 +171,8 @@ esCutType: Dict[int, str] = {
     tmEventSetup.OvRmDeltaPhi: "OvRmDeltaPhi",
     tmEventSetup.OvRmDeltaR: "OvRmDeltaR",
     tmEventSetup.ChargeCorrelation: "ChargeCorrelation",
+    tmEventSetup.Score: "Score",
+    tmEventSetup.Model: "Model",
     tmEventSetup.Count: "Count",
 }
 
