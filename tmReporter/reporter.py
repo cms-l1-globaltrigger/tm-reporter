@@ -96,6 +96,9 @@ esSignalTypes: List[int] = [
     tmEventSetup.MuonShowerOutOfTime0,
     tmEventSetup.MuonShowerOutOfTime1,
     tmEventSetup.AnomalyDetectionTrigger,
+    tmEventSetup.Axol1tlTrigger,
+    tmEventSetup.TopologicalTrigger,
+    tmEventSetup.CicadaTrigger,
 ]
 
 esCorrelationTypes: List[int] = [
@@ -168,6 +171,9 @@ esCutType: Dict[int, str] = {
     tmEventSetup.OvRmDeltaPhi: "OvRmDeltaPhi",
     tmEventSetup.OvRmDeltaR: "OvRmDeltaR",
     tmEventSetup.ChargeCorrelation: "ChargeCorrelation",
+    tmEventSetup.CicadaScore: "CicadaScore",
+    tmEventSetup.Score: "Score",
+    tmEventSetup.Model: "Model",
     tmEventSetup.Count: "Count",
 }
 
