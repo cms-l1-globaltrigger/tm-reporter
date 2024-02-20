@@ -219,6 +219,15 @@
                   {% elif cut.cutType == es.AnomalyScore %}
                     AnomalyScore: <a href="#{{ cut.name }}">{{ cut.name }}</a> {{ cut.minimumValue|round|int }}
                     : <code>0x{{ cut.minimumValue|round|int|hex }}</code>
+                  {% elif cut.cutType == es.CicadaScore %}
+                    CicadaScore: <a href="#{{ cut.name }}">{{ cut.name }}</a> {{ cut.minimumValue }}
+                    : <code>0x{{ cut.minimumIndex|hex }}</code>
+                  {% elif cut.cutType == es.Score %}
+                    Score: <a href="#{{ cut.name }}">{{ cut.name }}</a> {{ cut.minimumValue|round|int }}
+                    : <code>0x{{ cut.minimumValue|round|int|hex }}</code>
+                  {% elif cut.cutType == es.Model %}
+                    Model: <a href="#{{ cut.name }}">{{ cut.name }}</a>
+                    : <code>"{{ cut.data }}"</code>
                   {% else %}
                     esType[{{ cut.cutType }}]: [{{ cut.minimumValue }}, {{ cut.maximumValue }}],{{ cut.data }}
                   {% endif %}
@@ -279,7 +288,7 @@
                 : <code>[{{ minimum }}]</code>
                   <code>precision: {{ precision }}</code>
               {%- elif cut.cutType == es.ChargeCorrelation %}
-                Charge Correaltion: <code>{{ data }}</code>
+                Charge Correaltion: <code>"{{ data }}"</code>
               {%- else %}
                 esType[{{ cut.cutType }}]: [{{ minimumRaw }}, {{ maximumRaw }}]
                 : <code>[{{ minimum }}, {{ maximum }}]</code>,
@@ -317,7 +326,7 @@
         <td>{% if not cut.data and cut.cutType not in [es.Count, es.AnomalyScore] %}{{ cut.maximumValueRaw|round(3) }}{% endif %}</td>
         <td>{% if not cut.data %}<code>{{ cut.minimumValue|round(3) }}</code>{% endif %}</td>
         <td>{% if not cut.data and cut.cutType not in [es.Count, es.AnomalyScore] %}<code>{{ cut.maximumValue|round(3) }}</code>{% endif %}</td>
-        <td>{% if cut.data %}<code>0x{{ cut.data|int|hex(4) }}</code>{% endif %}</td>
+        <td>{% if cut.data %}<code>{% if cut.cutType in [es.ChargeCorrelation, es.Model] %}"{{ cut.data }}"{% else %}0x{{ cut.data|int|hex(4) }}{% endif %}</code>{% endif %}</td>
       </tr>
 {%- endfor %}
     </table>
