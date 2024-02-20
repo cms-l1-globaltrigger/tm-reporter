@@ -171,6 +171,7 @@ esCutType: Dict[int, str] = {
     tmEventSetup.OvRmDeltaPhi: "OvRmDeltaPhi",
     tmEventSetup.OvRmDeltaR: "OvRmDeltaR",
     tmEventSetup.ChargeCorrelation: "ChargeCorrelation",
+    tmEventSetup.CicadaScore: "CicadaScore",
     tmEventSetup.Score: "Score",
     tmEventSetup.Model: "Model",
     tmEventSetup.Count: "Count",
