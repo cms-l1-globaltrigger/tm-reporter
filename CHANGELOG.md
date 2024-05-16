@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0] - 2024-05-16
+
+### Changed
+
+- Depends on utm 0.13.0 (branch dev-0.13.x_htmhf).
+
 ## [2.12.0] - 2024-02-20
 
 ### Changed
