@@ -30,6 +30,7 @@ esEgammaTypes: List[int] = [
     tmEventSetup.DoubleEgammaOvRm,
     tmEventSetup.TripleEgammaOvRm,
     tmEventSetup.QuadEgammaOvRm,
+    tmEventSetup.MultiEgamma,
 ]
 
 esJetTypes: List[int] = [
@@ -41,6 +42,7 @@ esJetTypes: List[int] = [
     tmEventSetup.DoubleJetOvRm,
     tmEventSetup.TripleJetOvRm,
     tmEventSetup.QuadJetOvRm,
+    tmEventSetup.MultiJet,
 ]
 
 esTauTypes: List[int] = [
@@ -52,6 +54,7 @@ esTauTypes: List[int] = [
     tmEventSetup.DoubleTauOvRm,
     tmEventSetup.TripleTauOvRm,
     tmEventSetup.QuadTauOvRm,
+    tmEventSetup.MultiTau,
 ]
 
 esEnergySumsTypes: List[int] = [
@@ -61,7 +64,7 @@ esEnergySumsTypes: List[int] = [
     tmEventSetup.MissingEt,
     tmEventSetup.MissingHt,
     tmEventSetup.MissingEtHF,
-#    tmEventSetup.MissingHtHF,
+    tmEventSetup.MissingHtHF,
     tmEventSetup.AsymmetryEt,
     tmEventSetup.AsymmetryHt,
     tmEventSetup.AsymmetryEtHF,
