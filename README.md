@@ -3,11 +3,8 @@ XML Menu Reporter
 
 ## Install
 
-Install using pip (>= 19.0).
-
 ```bash
-pip install --upgrade pip
-pip install git+https://github.com/cms-l1-globaltrigger/tm-reporter.git@2.13.0
+pip install --extra-index-url https://globaltrigger.web.cern.ch/pypi tm-reporter
 ```
 
 ## Basic usage
