@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.14.0] - 2026-01-30
 
+### Added
+
+- Added `NETETMHF` object (#29).
+
 ### Changed
 
 - Depends on utm 0.14.0 (#29).
