@@ -65,6 +65,7 @@ esEnergySumsTypes: List[int] = [
     tmEventSetup.MissingHt,
     tmEventSetup.MissingEtHF,
     tmEventSetup.MissingHtHF,
+    tmEventSetup.NetMissingEtHF,
     tmEventSetup.AsymmetryEt,
     tmEventSetup.AsymmetryHt,
     tmEventSetup.AsymmetryEtHF,
